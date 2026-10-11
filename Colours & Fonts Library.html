@@ -150,8 +150,14 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
 .stage .slidebox{--sh:var(--pink)}
 .readout{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.check{display:flex;gap:9px;align-items:center;font:400 14px "Archivo Black",sans-serif}
-.check input{width:18px;height:18px;accent-color:var(--yellow)}
+.toggle{display:flex;align-items:center;gap:10px;cursor:pointer;width:max-content}
+.toggle input{position:absolute;opacity:0;width:1px;height:1px}
+.track{width:44px;height:24px;border:2px solid var(--ink);border-radius:999px;background:var(--card2);position:relative;flex:none;transition:background .15s}
+.track::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--ink);transition:left .15s}
+.toggle input:checked + .track{background:var(--yellow)}
+.toggle input:checked + .track::after{left:22px;background:var(--black)}
+.toggle input:focus-visible + .track{outline:3px solid var(--yellow);outline-offset:2px}
+.lockfields{display:flex;flex-direction:column;gap:10px;padding:12px;border:2px dashed #5a5a62;border-radius:10px}
 input[type=range]{width:100%;accent-color:var(--yellow)}
 
 dialog{border:2px solid var(--ink);border-radius:12px;padding:0;background:var(--card);color:var(--ink);max-width:min(92vw,900px);max-height:92vh;box-shadow:6px 6px 0 var(--pink)}
@@ -232,7 +238,14 @@ main{padding-bottom:80px}
         <div class="field"><span class="lbl">Main Text Colour<span class="val" id="pTextName"></span></span><div class="dots" id="pText"></div></div>
         <div class="field"><span class="lbl">Stressed Word Colour<span class="val" id="pAccName"></span></span><div class="dots" id="pAcc"></div></div>
         <label class="field"><span class="lbl">Load a Combination</span><select id="pCombo"></select></label>
-        <label class="check"><input type="checkbox" id="pLock" checked> Show Lockup and Handle</label>
+        <div class="field">
+          <label class="toggle"><input type="checkbox" id="pLock" checked><span class="track"></span><span class="lbl">Show Lockup and Handle</span></label>
+          <div class="lockfields" id="pLockFields">
+            <label class="field"><span class="lbl">Lockup</span><input type="text" id="pLockText"></label>
+            <span class="note">Put ~~two tildes~~ around a word to cross it out in red.</span>
+            <label class="field"><span class="lbl">Handle</span><input type="text" id="pHandle"></label>
+          </div>
+        </div>
       </div>
       <div class="stage">
         <div class="box slidebox" id="pSlide"></div>
@@ -433,6 +446,9 @@ const PHOTOS = [
 /* ---------- slide rendering ---------- */
 const fstyle = p => `font-family:'${p.fam || p.f}'${p.fb ? `,'${p.fb}'` : ''},sans-serif;font-weight:${p.w || 400};font-style:${p.it ? 'italic' : 'normal'};text-transform:${p.up ? 'uppercase' : 'none'};font-size:calc(var(--fs) * ${p.k || 1})`;
 const SAMPLE = { main: 'So just live.', stress: 'Keep breathing.' };
+const DEFAULT_LOCK = 'Collecting ~~Magnets~~ Advice', DEFAULT_HANDLE = '@sritesh.posted';
+// words wrapped in ~~ get the red hand drawn strike
+const lockHTML = t => esc(t).replace(/~~(.+?)~~/g, '<span class="strike">$1</span>');
 
 function slideHTML(o) {
   const set = setBy(o.set);
@@ -441,7 +457,7 @@ function slideHTML(o) {
   const stressSpan = `<span class="${set.box ? 'boxed' : 'ul'}" style="${fstyle(set.s)}">${esc(stress)}</span>`;
   return `<div class="slide ${photo ? 'photo' : ''} ${o.wide ? 'wide' : ''}" style="--sbg:${photo ? '#000' : o.bg};--main:${o.text};--acc:${o.acc};--boxink:${inkOn(o.acc)}">
     ${photo ? `<div class="img" style="background-image:url('${PHOTO(o.photo)}')"></div><div class="shade" style="opacity:${(o.shade ?? 45) / 100}"></div>` : ''}
-    ${o.lockup ? `<div class="lock">Collecting <span class="strike">Magnets</span> Advice</div><div class="handle">@sritesh.posted</div>` : ''}
+    ${o.lockup ? `<div class="lock">${lockHTML(o.lockText ?? DEFAULT_LOCK)}</div><div class="handle">${esc(o.handle ?? DEFAULT_HANDLE)}</div>` : ''}
     <div class="q"><span class="ln" style="${fstyle(set.m)}">${esc(main)}</span><span class="ln">${stressSpan}</span></div>
     ${o.minis ? `<div class="minis">${o.minis.map(h => `<i style="background:${h}"></i>`).join('')}</div>` : ''}
   </div>`;
@@ -564,7 +580,6 @@ function renderFonts() {
     return `<div class="box fcard">
       <div class="fname">${esc(f.f)}<span class="pill ${f.r === 'c' ? 'clean' : 'expr'}">${f.r === 'c' ? 'Clean' : 'Expressive'}</span></div>
       <div class="spec" style="${st}">${esc(word)}</div>
-      <div class="note">${esc(f.from)}</div>
     </div>`;
   }).join('');
 }
@@ -589,7 +604,7 @@ function renderSets() {
 }
 
 /* ---------- mix & match ---------- */
-const P = { set: 3, mode: 'photo', photo: 5226, shade: 45, bg: '#000000', text: '#FFFFFF', acc: '#BAD62C', main: 'So just live.', stress: 'Keep breathing.', lockup: true };
+const P = { set: 3, mode: 'photo', photo: 5226, shade: 45, bg: '#000000', text: '#FFFFFF', acc: '#BAD62C', main: 'So just live.', stress: 'Keep breathing.', lockup: true, lockText: DEFAULT_LOCK, handle: DEFAULT_HANDLE };
 const ALL_HEX = () => [...COLOURS.keys()].sort((a, b) => hsl(a)[0] - hsl(b)[0] || hsl(a)[2] - hsl(b)[2]);
 const dotsHTML = key => ALL_HEX().map(h => `<button type="button" title="${esc(byHex(h).name)} ${h}" aria-label="${esc(byHex(h).name)}" data-k="${key}" data-h="${h}" aria-pressed="${P[key] === h && !(key === 'bg' && P.mode === 'photo')}" style="background:${h}"></button>`).join('');
 function buildPlay() {
@@ -602,6 +617,9 @@ function buildPlay() {
   $('#pSet').onchange = e => { P.set = +e.target.value; paintPlay(); };
   $('#pShade').oninput = e => { P.shade = +e.target.value; paintPlay(); };
   $('#pLock').onchange = e => { P.lockup = e.target.checked; paintPlay(); };
+  $('#pLockText').value = P.lockText; $('#pHandle').value = P.handle;
+  $('#pLockText').oninput = e => { P.lockText = e.target.value; paintPlay(); };
+  $('#pHandle').oninput = e => { P.handle = e.target.value; paintPlay(); };
   $('#pMode').onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; P.mode = b.dataset.v; paintPlay(); };
   $('#pPhotos').onclick = e => { const b = e.target.closest('[data-ph]'); if (!b) return; P.photo = +b.dataset.ph; P.mode = 'photo'; paintPlay(); };
   $('#panel').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; P[b.dataset.k] = b.dataset.h; if (b.dataset.k === 'bg') P.mode = 'solid'; paintPlay(); });
@@ -625,6 +643,7 @@ function paintPlay() {
   $('#pMode').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === P.mode));
   $('#pPhotos').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', P.mode === 'photo' && +b.dataset.ph === P.photo));
   $('#pShadeWrap').style.display = P.mode === 'photo' ? '' : 'none';
+  $('#pLockFields').style.display = P.lockup ? '' : 'none';
   $('#pBg').innerHTML = dotsHTML('bg'); $('#pText').innerHTML = dotsHTML('text'); $('#pAcc').innerHTML = dotsHTML('acc');
   $('#pTextName').textContent = `${byHex(P.text).name} ${P.text}`;
   $('#pAccName').textContent = `${byHex(P.acc).name} ${P.acc}`;
