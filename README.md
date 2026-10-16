@@ -8,7 +8,7 @@ Open `Colours & Fonts Library.html` in a browser (or `index.html`, which goes st
 
 - **All Colours:** every saved colour with its hex code, plus every combination (trios, five colour palettes, pairs and ideas)
 - **All Fonts:** every font, with a box to type a word and preview it in all of them
-- **Font Pairings:** sets 1 to 25, shown on real Bali photos
+- **Font Pairings:** sets 1 to 30, shown on real Bali photos
 - **Mix & Match:** build a carousel slide from any font pairing, photo and colours
 
 ## Folders

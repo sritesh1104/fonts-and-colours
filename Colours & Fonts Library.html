@@ -8,10 +8,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Caveat:wght@400;700&family=Inter:wght@300;500;900&family=Poppins:wght@600&family=Pinyon+Script&family=Instrument+Serif:ital@0;1&family=Bodoni+Moda:wght@700&family=Great+Vibes&family=Cormorant+Garamond:wght@500&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&family=Courier+Prime&family=Kalam:wght@400;700&family=Montserrat:wght@500;800&family=Playfair+Display:ital@1&family=Nunito:wght@800&family=Gochi+Hand&family=Damion&family=GFS+Didot&family=Bebas+Neue&family=Oswald:wght@700&family=Bowlby+One&family=Questrial&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Allura&family=Courier+Prime&family=Kalam:wght@400;700&family=Montserrat:wght@500;800&family=Playfair+Display:ital@1&family=Nunito:wght@600;800&family=Gochi+Hand&family=Damion&family=GFS+Didot&family=Bebas+Neue&family=Oswald:wght@700&family=Bowlby+One&family=Questrial&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;800&family=Comfortaa:wght@700&family=Gloock&family=Bagel+Fat+One&family=Rozha+One&family=Mr+Dafoe&family=League+Gothic&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&family=Jost:wght@300&family=Space+Mono:wght@400;700&family=Homemade+Apple&family=Libre+Baskerville&family=Reenie+Beanie&family=Archivo+Black&family=Nothing+You+Could+Do&family=Syne:wght@600&family=Kaushan+Script&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600&family=Onest:wght@500&family=STIX+Two+Text:wght@600&family=Urbanist:wght@600&family=Outfit:wght@600&family=Archivo:wght@800&family=Young+Serif&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@800&family=Hanken+Grotesk:wght@600&family=Righteous&family=Lexend:wght@600&family=Fredoka:wght@600&family=Quicksand:wght@700&family=Josefin+Sans:wght@300&display=swap">
 <style>
+/* real Cooper Black when it is installed (it is on this PC), otherwise Fraunces Black stands in */
+@font-face{font-family:"Cooper Local";src:local("Cooper Black"),local("CooperBlack");font-weight:100 900}
 :root{
   --bg:#0e0e10; --dot:rgba(255,255,255,.075); --card:#18181b; --card2:#222227; --ink:#f4f1e8; --muted:#a9a59b;
   --pink:#f49ad9; --cyan:#bdeff7; --yellow:#f9c93d; --green:#9be37f; --red:#E3261C; --black:#0e0e10;
@@ -262,8 +266,8 @@ main{padding-bottom:80px}
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const PIC = n => encodeURI('Colours/WhatsApp Image 2026-10-09 at ' + n + '.jpeg');
-const FPIC = n => encodeURI('Fonts/WhatsApp Image 2026-10-09 at ' + n + '.jpeg');
+const PIC = n => encodeURI('Colours/WhatsApp Image ' + (n.includes(' at ') ? n : '2026-10-09 at ' + n) + '.jpeg');
+const FPIC = n => encodeURI('Fonts/WhatsApp Image ' + (n.includes(' at ') ? n : '2026-10-09 at ' + n) + '.jpeg');
 const PHOTO = n => encodeURI('Library files/bali-' + n + '.jpg');
 const rgb = h => [1,3,5].map(i => parseInt(h.slice(i, i + 2), 16));
 const lum = h => { const [r,g,b] = rgb(h).map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126*r + .7152*g + .0722*b; };
@@ -318,7 +322,7 @@ const PICTURE_GROUPS = [
   { type: 'Five Colour Palettes', combos: [
     { pic: '1.25.33 PM', name: 'Pastel Sunset', cols: [c('Dusty Rose','#C78997'), c('Peach','#F5B297'), c('Butter','#F5D6A2'), c('Cream','#F5E4C4'), c('Stone Blue','#8A99B1')] },
     { pic: '1.25.33 PM (1)', name: 'Ocean to Mint', cols: [c('Indigo','#4D52B4'), c('Sky Blue','#4E9CE8'), c('Aqua','#70D6C5'), c('Mint','#CAE5BC'), c('Pale Mint','#E1EDD4')] },
-    { pic: '1.25.33 PM (2)', name: 'Berry Bloom', cols: [c('Wine','#812D35'), c('Plum','#934372'), c('Orchid','#B9689F'), c('Mauve','#C388A9'), c('Denim','#536CA5')] },
+    { pic: '1.25.33 PM (2)', name: 'Berry Bloom', cols: [c('Wine','#812D35'), c('Magenta Plum','#934372'), c('Orchid','#B9689F'), c('Mauve','#C388A9'), c('Denim','#536CA5')] },
     { pic: '1.25.34 PM', name: 'Midnight Lilac', cols: [c('Night','#0E0D15'), c('Navy','#182346'), c('Dusk Blue','#3D5387'), c('Periwinkle','#7C83AD'), c('Lilac Grey','#BFA9BA')] },
     { pic: '1.25.34 PM (1)', name: 'Pink Fade', cols: [c('Smoky Purple','#826E8B'), c('Hot Pink','#EB6E9B'), c('Bubblegum','#E69CBA'), c('Blush','#F4B3C7'), c('Ballet Pink','#F5CDD0')] },
   ]},
@@ -331,6 +335,13 @@ const PICTURE_GROUPS = [
     { pic: '1.25.36 PM (1)', cols: [c('Lime Sprout','#E5FE98'), c('Fresh Canopy','#2D3E2C')] },
     { pic: '1.25.36 PM (2)', cols: [c('Coral','#FF6B6B'), c('Mid Navy','#0A0F29')] },
     { pic: '1.25.37 PM', cols: [c('Matcha','#9CA763'), c('Milk Honey','#F1E8C7')] },
+    { pic: '2026-10-16 at 10.28.49 PM (10)', cols: [c('Royal Blue','#014BAA'), c('Light Cream','#F8F3F0')] },
+    { pic: '2026-10-16 at 10.28.49 PM (11)', cols: [c('Wine Red','#7F011F'), c('Light Sand','#F5EBD0')] },
+    { pic: '2026-10-16 at 10.28.49 PM (12)', cols: [c('Orange','#EC5E27'), c('Milk','#FDFDF1')] },
+    { pic: '2026-10-16 at 10.28.49 PM (13)', cols: [c('Plum','#381932'), c('Warm Milk','#FFF3E6')] },
+    { pic: '2026-10-16 at 10.28.49 PM (14)', cols: [c('Midnight Indigo','#282B4A'), c('Vanilla','#EEEBDA')] },
+    { pic: '2026-10-16 at 10.28.49 PM (15)', cols: [c('Cherry','#890149'), c('Alabaster','#F3F3E7')] },
+    { pic: '2026-10-16 at 10.28.49 PM (16)', cols: [c('Forest','#064734'), c('Leaf','#E0FFC2')] },
   ]},
 ];
 // the series colours stay in the colour grid but are not shown as a combination
@@ -387,6 +398,11 @@ const SETS = [
   { n:23, name:'Sunday paper', m:{f:'DM Sans',k:.88}, s:{f:'DM Serif Display',it:1,k:1.25}, best:'Any length, easy to read' },
   { n:24, name:'Loud & tender', m:{f:'Archivo Black',up:1,k:.72}, s:{f:'Nothing You Could Do',k:1.1}, best:'Tough love advice' },
   { n:25, name:'Brush stroke', m:{f:'Syne',w:600,k:.85}, s:{f:'Kaushan Script',k:1.2}, best:'Adventurous advice' },
+  { n:26, name:'Moara + Questrial', m:{f:'Questrial',k:.88}, s:{f:'Archivo',w:800,up:1,k:1.05}, best:'Bold, outdoorsy advice' },
+  { n:27, name:'Median + Nunito Sans', m:{f:'Nunito Sans',w:300,k:.9}, s:{f:'Young Serif',k:1.15}, best:'Warm, calm advice' },
+  { n:28, name:'Megion + Oakes Grotesk', m:{f:'Hanken Grotesk',w:600,k:.85}, s:{f:'Inter Tight',w:800,k:1.1}, best:'Punchy, modern advice' },
+  { n:29, name:'Cooper Black + Nunito', m:{f:'Nunito',w:600,k:.88}, s:{f:'Cooper Black',fam:'Cooper Local',fb:'Fraunces',w:900,k:1.1}, best:'Friendly, retro advice' },
+  { n:30, name:'Stix Two + Onest', m:{f:'Onest',w:500,k:.85}, s:{f:'STIX Two Text',w:600,k:1.15}, best:'Classic, thoughtful advice' },
 ];
 const setBy = n => SETS.find(s => s.n === +n) || SETS[0];
 const setLabel = s => `Set ${s.n} · ${tc(s.name)} (${s.m.f} + ${s.s.f})`;
@@ -435,6 +451,21 @@ const FONTS = [
   { f:'Nothing You Could Do', r:'e', from:'Set 24' },
   { f:'Syne', w:600, r:'c', from:'Set 25' },
   { f:'Kaushan Script', r:'e', from:'Set 25' },
+  { f:'Archivo', w:800, up:1, r:'e', from:'Lookalike of Moara (set 26)' },
+  { f:'Nunito Sans', w:300, r:'c', from:'Set 27' },
+  { f:'Young Serif', r:'e', from:'Lookalike of Median (set 27)' },
+  { f:'Hanken Grotesk', w:600, r:'c', from:'Lookalike of Oakes Grotesk (set 28)' },
+  { f:'Inter Tight', w:800, r:'e', from:'Lookalike of Megion (set 28)' },
+  { f:'Cooper Black', fam:'Cooper Local', fb:'Fraunces', w:900, r:'e', from:'Set 29' },
+  { f:'Onest', w:500, r:'c', from:'Set 30' },
+  { f:'STIX Two Text', w:600, r:'e', from:'Set 30' },
+  { f:'Urbanist', w:600, r:'c', from:'Display font' },
+  { f:'Outfit', w:600, r:'c', from:'Display font' },
+  { f:'Righteous', r:'e', from:'Lookalike of Nura' },
+  { f:'Lexend', w:600, r:'c', from:'Lookalike of Ancola' },
+  { f:'Fredoka', w:600, r:'e', from:'Lookalike of Alro' },
+  { f:'Quicksand', w:700, r:'c', from:'Lookalike of Surgena' },
+  { f:'Josefin Sans', w:300, r:'c', from:'Lookalike of Qurova' },
 ];
 
 const PHOTOS = [
@@ -586,7 +617,8 @@ $('#word').addEventListener('input', renderFonts);
 $('#fontChips').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; fontFilter = b.dataset.f; renderFonts(); });
 
 const SET_PREVIEW = { 1:[4026,'#FDA2AC'], 2:[3663,'#F9DE8F'], 3:[5226,'#BAD62C'], 4:[4026,'#EF8557'], 5:[4041,'#FF6B6B'], 6:[3921,'#E5FE98'], 7:[5070,'#D5360C'], 8:[5193,'#FEFC11'], 9:[4606,'#E7577A'], 10:[3663,'#EECEDB'], 11:[3921,'#F24632'], 12:[5193,'#E3261C'], 13:[5070,'#FFBF0B'],
-  14:[5070,'#FEFC11'], 15:[4026,'#E7577A'], 16:[5193,'#22F1A9'], 17:[4606,'#F4E0C5'], 18:[3921,'#C1E257'], 19:[5226,'#FFFFFF'], 20:[3663,'#F29C47'], 21:[3921,'#F15B29'], 22:[4041,'#F9DE8F'], 23:[4026,'#70D6C5'], 24:[5226,'#22F1A9'], 25:[5193,'#FF6B6B'] };
+  14:[5070,'#FEFC11'], 15:[4026,'#E7577A'], 16:[5193,'#22F1A9'], 17:[4606,'#F4E0C5'], 18:[3921,'#C1E257'], 19:[5226,'#FFFFFF'], 20:[3663,'#F29C47'], 21:[3921,'#F15B29'], 22:[4041,'#F9DE8F'], 23:[4026,'#70D6C5'], 24:[5226,'#22F1A9'], 25:[5193,'#FF6B6B'],
+  26:[4606,'#E0FFC2'], 27:[4026,'#F5EBD0'], 28:[3921,'#EC5E27'], 29:[5070,'#E0FFC2'], 30:[5226,'#F5EBD0'] };
 function renderSets() {
   $('#sets').innerHTML = SETS.map(s => {
     const [ph, acc] = SET_PREVIEW[s.n];
