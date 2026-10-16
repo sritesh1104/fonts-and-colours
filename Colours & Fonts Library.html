@@ -96,8 +96,8 @@ h3{font:400 21px/1.1 "Archivo Black",sans-serif;margin:34px 0 14px}
 .slide.wide{aspect-ratio:16/10}
 .slide .img{position:absolute;inset:0;background-size:cover;background-position:center;z-index:-2}
 .slide .shade{position:absolute;inset:0;background:#000;z-index:-1}
-.slide .lock{position:absolute;top:6.5cqw;left:0;right:0;font:600 3.7cqw/1 Fraunces}
-.slide .handle{position:absolute;bottom:6cqw;left:0;right:0;font:500 3.4cqw/1 Fraunces}
+.slide .lock{position:absolute;top:6.5cqw;left:0;right:0;padding:0 7cqw;font:600 3.7cqw/1 Fraunces}
+.slide .handle{position:absolute;bottom:6cqw;left:0;right:0;padding:0 7cqw;font:500 3.4cqw/1 Fraunces}
 .slide .q{--fs:8.4cqw;padding:0 9cqw;line-height:1.1;width:100%}
 .slide.wide .q{--fs:7.6cqw}
 .slide.photo .q,.slide.photo .lock,.slide.photo .handle{text-shadow:0 .3cqw 2.4cqw rgba(0,0,0,.35)}
@@ -244,9 +244,9 @@ main{padding-bottom:80px}
         <div class="field">
           <label class="toggle"><input type="checkbox" id="pLock" checked><span class="track"></span><span class="lbl">Show Lockup and Handle</span></label>
           <div class="lockfields" id="pLockFields">
-            <label class="field"><span class="lbl">Lockup</span><input type="text" id="pLockText"></label>
+            <label class="field"><span class="lbl">Lockup<span class="seg" data-pos="lockPos"><button type="button" data-v="left">Left</button><button type="button" data-v="center">Middle</button><button type="button" data-v="right">Right</button></span></span><input type="text" id="pLockText"></label>
             <span class="note">Put ~~two tildes~~ around a word to cross it out in red.</span>
-            <label class="field"><span class="lbl">Handle</span><input type="text" id="pHandle"></label>
+            <label class="field"><span class="lbl">Handle<span class="seg" data-pos="handlePos"><button type="button" data-v="left">Left</button><button type="button" data-v="center">Middle</button><button type="button" data-v="right">Right</button></span></span><input type="text" id="pHandle"></label>
           </div>
         </div>
       </div>
@@ -487,7 +487,7 @@ function slideHTML(o) {
   const stressSpan = `<span class="${set.box ? 'boxed' : 'ul'}" style="${fstyle(set.s)}">${esc(stress)}</span>`;
   return `<div class="slide ${photo ? 'photo' : ''} ${o.wide ? 'wide' : ''}" style="--sbg:${photo ? '#000' : o.bg};--main:${o.text};--acc:${o.acc};--boxink:${inkOn(o.acc)}">
     ${photo ? `<div class="img" style="background-image:url('${PHOTO(o.photo)}')"></div><div class="shade" style="opacity:${(o.shade ?? 45) / 100}"></div>` : ''}
-    ${o.lockup ? `<div class="lock">${lockHTML(o.lockText ?? DEFAULT_LOCK)}</div><div class="handle">${esc(o.handle ?? DEFAULT_HANDLE)}</div>` : ''}
+    ${o.lockup ? `<div class="lock" style="text-align:${o.lockPos || 'center'}">${lockHTML(o.lockText ?? DEFAULT_LOCK)}</div><div class="handle" style="text-align:${o.handlePos || 'center'}">${esc(o.handle ?? DEFAULT_HANDLE)}</div>` : ''}
     <div class="q"><span class="ln" style="${fstyle(set.m)}">${esc(main)}</span><span class="ln">${stressSpan}</span></div>
     ${o.minis ? `<div class="minis">${o.minis.map(h => `<i style="background:${h}"></i>`).join('')}</div>` : ''}
   </div>`;
@@ -635,7 +635,7 @@ function renderSets() {
 }
 
 /* ---------- mix & match ---------- */
-const P = { set: 3, mode: 'photo', photo: 5226, shade: 45, bg: '#000000', text: '#FFFFFF', acc: '#BAD62C', main: 'So just live.', stress: 'Keep breathing.', lockup: true, lockText: DEFAULT_LOCK, handle: DEFAULT_HANDLE };
+const P = { set: 3, mode: 'photo', photo: 5226, shade: 45, bg: '#000000', text: '#FFFFFF', acc: '#BAD62C', main: 'So just live.', stress: 'Keep breathing.', lockup: true, lockText: DEFAULT_LOCK, handle: DEFAULT_HANDLE, lockPos: 'center', handlePos: 'center' };
 const ALL_HEX = () => [...COLOURS.keys()].sort((a, b) => hsl(a)[0] - hsl(b)[0] || hsl(a)[2] - hsl(b)[2]);
 const dotsHTML = key => ALL_HEX().map(h => `<button type="button" title="${esc(byHex(h).name)} ${h}" aria-label="${esc(byHex(h).name)}" data-k="${key}" data-h="${h}" aria-pressed="${P[key] === h && !(key === 'bg' && P.mode === 'photo')}" style="background:${h}"></button>`).join('');
 function buildPlay() {
@@ -651,6 +651,7 @@ function buildPlay() {
   $('#pLockText').value = P.lockText; $('#pHandle').value = P.handle;
   $('#pLockText').oninput = e => { P.lockText = e.target.value; paintPlay(); };
   $('#pHandle').oninput = e => { P.handle = e.target.value; paintPlay(); };
+  document.querySelectorAll('[data-pos]').forEach(sg => sg.onclick = e => { e.preventDefault(); const b = e.target.closest('[data-v]'); if (!b) return; P[sg.dataset.pos] = b.dataset.v; paintPlay(); });
   $('#pMode').onclick = e => { const b = e.target.closest('[data-v]'); if (!b) return; P.mode = b.dataset.v; paintPlay(); };
   $('#pPhotos').onclick = e => { const b = e.target.closest('[data-ph]'); if (!b) return; P.photo = +b.dataset.ph; P.mode = 'photo'; paintPlay(); };
   $('#panel').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (!b) return; P[b.dataset.k] = b.dataset.h; if (b.dataset.k === 'bg') P.mode = 'solid'; paintPlay(); });
@@ -675,6 +676,7 @@ function paintPlay() {
   $('#pPhotos').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', P.mode === 'photo' && +b.dataset.ph === P.photo));
   $('#pShadeWrap').style.display = P.mode === 'photo' ? '' : 'none';
   $('#pLockFields').style.display = P.lockup ? '' : 'none';
+  document.querySelectorAll('[data-pos]').forEach(sg => sg.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === P[sg.dataset.pos])));
   $('#pBg').innerHTML = dotsHTML('bg'); $('#pText').innerHTML = dotsHTML('text'); $('#pAcc').innerHTML = dotsHTML('acc');
   $('#pTextName').textContent = `${byHex(P.text).name} ${P.text}`;
   $('#pAccName').textContent = `${byHex(P.acc).name} ${P.acc}`;
