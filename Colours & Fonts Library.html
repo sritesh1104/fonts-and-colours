@@ -155,6 +155,7 @@ input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid 
 .stage .slidebox{--sh:var(--pink)}
 .readout{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two.stack{grid-template-columns:1fr}
 .toggle{display:flex;align-items:center;gap:10px;cursor:pointer;width:max-content}
 .toggle input{position:absolute;opacity:0;width:1px;height:1px}
 .track{width:44px;height:24px;border:2px solid var(--ink);border-radius:999px;background:var(--card2);position:relative;flex:none;transition:background .15s}
@@ -227,8 +228,8 @@ main{padding-bottom:80px}
     <div class="shead"><span class="num">04</span><h2>Mix &amp; Match</h2></div>
     <div class="play">
       <div class="box panel" id="panel">
-        <div class="two">
-          <label class="field"><span class="lbl">Main Words</span><input type="text" id="pMain"></label>
+        <div class="two stack">
+          <label class="field"><span class="lbl">Main Words<span class="seg" data-pos="textPos"><button type="button" data-v="left">Left</button><button type="button" data-v="center">Middle</button><button type="button" data-v="right">Right</button></span></span><input type="text" id="pMain"></label>
           <label class="field"><span class="lbl">Stressed Words</span><input type="text" id="pStress"></label>
         </div>
         <label class="field"><span class="lbl">Font Pairing</span><select id="pSet"></select></label>
@@ -488,7 +489,7 @@ function slideHTML(o) {
   return `<div class="slide ${photo ? 'photo' : ''} ${o.wide ? 'wide' : ''}" style="--sbg:${photo ? '#000' : o.bg};--main:${o.text};--acc:${o.acc};--boxink:${inkOn(o.acc)}">
     ${photo ? `<div class="img" style="background-image:url('${PHOTO(o.photo)}')"></div><div class="shade" style="opacity:${(o.shade ?? 45) / 100}"></div>` : ''}
     ${o.lockup ? `<div class="lock" style="text-align:${o.lockPos || 'center'}">${lockHTML(o.lockText ?? DEFAULT_LOCK)}</div><div class="handle" style="text-align:${o.handlePos || 'center'}">${esc(o.handle ?? DEFAULT_HANDLE)}</div>` : ''}
-    <div class="q"><span class="ln" style="${fstyle(set.m)}">${esc(main)}</span><span class="ln">${stressSpan}</span></div>
+    <div class="q" style="text-align:${o.textPos || 'center'}"><span class="ln" style="${fstyle(set.m)}">${esc(main)}</span><span class="ln">${stressSpan}</span></div>
     ${o.minis ? `<div class="minis">${o.minis.map(h => `<i style="background:${h}"></i>`).join('')}</div>` : ''}
   </div>`;
 }
@@ -519,7 +520,7 @@ function comboCard(id, o) {
   return `<article class="box card" data-combo="${id}" data-type="${o.type}">
     <div class="pv"></div>
     <div class="body">
-      <div class="cardhead">${o.pic ? `<img class="thumb" src="${o.pic}" alt="Source picture" loading="lazy" data-view="${o.pic}" data-cap="${esc(o.title)}">` : ''}<div class="ttl">${esc(o.title)}</div></div>
+      <div class="cardhead"><div class="ttl">${esc(o.title)}</div></div>
       ${o.why ? `<div class="why">${esc(o.why)}</div>` : ''}
       <div class="strip">${o.cols.map(col => `<button type="button" data-copy="${col.hex}" title="Copy ${col.hex}" style="background:${col.hex};color:${inkOn(col.hex)}"><span>${col.hex}</span></button>`).join('')}</div>
       <div class="names">${o.cols.map(col => `<div><span class="dot" style="background:${col.hex}"></span><span>${esc(col.name)}${col.code ? ` <span class="note">· ${esc(col.code)}</span>` : ''}</span><span class="hx">${col.hex}</span></div>`).join('')}</div>
@@ -635,7 +636,7 @@ function renderSets() {
 }
 
 /* ---------- mix & match ---------- */
-const P = { set: 3, mode: 'photo', photo: 5226, shade: 45, bg: '#000000', text: '#FFFFFF', acc: '#BAD62C', main: 'So just live.', stress: 'Keep breathing.', lockup: true, lockText: DEFAULT_LOCK, handle: DEFAULT_HANDLE, lockPos: 'center', handlePos: 'center' };
+const P = { set: 3, mode: 'photo', photo: 5226, shade: 45, bg: '#000000', text: '#FFFFFF', acc: '#BAD62C', main: 'So just live.', stress: 'Keep breathing.', lockup: true, lockText: DEFAULT_LOCK, handle: DEFAULT_HANDLE, lockPos: 'center', handlePos: 'center', textPos: 'center' };
 const ALL_HEX = () => [...COLOURS.keys()].sort((a, b) => hsl(a)[0] - hsl(b)[0] || hsl(a)[2] - hsl(b)[2]);
 const dotsHTML = key => ALL_HEX().map(h => `<button type="button" title="${esc(byHex(h).name)} ${h}" aria-label="${esc(byHex(h).name)}" data-k="${key}" data-h="${h}" aria-pressed="${P[key] === h && !(key === 'bg' && P.mode === 'photo')}" style="background:${h}"></button>`).join('');
 function buildPlay() {
