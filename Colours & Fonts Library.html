@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;600&family=Onest:wght@500&family=STIX+Two+Text:wght@600&family=Urbanist:wght@600&family=Outfit:wght@600&family=Archivo:wght@800&family=Young+Serif&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@800&family=Hanken+Grotesk:wght@600&family=Righteous&family=Lexend:wght@600&family=Fredoka:wght@600&family=Quicksand:wght@700&family=Josefin+Sans:wght@300&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@800&family=Libre+Caslon+Condensed:wght@500&family=Instrument+Sans:wght@600&family=Petit+Formal+Script&family=Familjen+Grotesk:wght@500&family=Pixelify+Sans:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500&family=Lilita+One&family=Italianno&display=swap">
 <style>
 /* real Cooper Black when it is installed (it is on this PC), otherwise Fraunces Black stands in */
 @font-face{font-family:"Cooper Local";src:local("Cooper Black"),local("CooperBlack");font-weight:100 900}
@@ -459,6 +460,10 @@ const SETS = [
   { n:28, name:'Megion + Oakes Grotesk', m:{f:'Hanken Grotesk',w:600,k:.85}, s:{f:'Inter Tight',w:800,k:1.1}, best:'Punchy, modern advice' },
   { n:29, name:'Cooper Black + Nunito', m:{f:'Nunito',w:600,k:.88}, s:{f:'Cooper Black',fam:'Cooper Local',fb:'Fraunces',w:900,k:1.1}, best:'Friendly, retro advice' },
   { n:30, name:'Stix Two + Onest', m:{f:'Onest',w:500,k:.85}, s:{f:'STIX Two Text',w:600,k:1.15}, best:'Classic, thoughtful advice' },
+  { n:31, name:'Open Sauce + Peace Sans', m:{f:'Plus Jakarta Sans',w:500,k:.88}, s:{f:'Lilita One',k:1.15}, best:'Friendly, upbeat advice' },
+  { n:32, name:'Citadel + Helvetica', m:{f:'Helvetica',fb:'Arial',w:700,k:.9}, s:{f:'Italianno',k:1.6}, best:'Elegant, short advice' },
+  { n:33, name:'Playfair Display + Poppins', m:{f:'Poppins',w:600,up:1,k:.82}, s:{f:'Playfair Display',it:1,k:1.25}, best:'Stylish, confident advice' },
+  { n:34, name:'Inter + Times New Roman', m:{f:'Inter',w:500,k:.88}, s:{f:'Times New Roman',w:700,it:1,k:1.2}, best:'Simple, timeless advice' },
 ];
 const setBy = n => SETS.find(s => s.n === +n) || SETS[0];
 const setLabel = s => `Set ${s.n} · ${tc(s.name)} (${s.m.f} + ${s.s.f})`;
@@ -528,6 +533,11 @@ const FONTS = [
   { f:'Petit Formal Script', r:'e', from:'Lookalike of Palmeria' },
   { f:'Familjen Grotesk', w:500, r:'c', from:'Lookalike of Offset TM' },
   { f:'Pixelify Sans', w:500, r:'e', from:'Lookalike of SP Vixel' },
+  { f:'Plus Jakarta Sans', w:500, r:'c', from:'Lookalike of Open Sauce (set 31)' },
+  { f:'Lilita One', r:'e', from:'Lookalike of Peace Sans (set 31)' },
+  { f:'Italianno', r:'e', from:'Lookalike of Citadel (set 32)' },
+  { f:'Helvetica', fb:'Arial', w:700, r:'c', from:'Set 32 (Arial stands in when Helvetica is missing)' },
+  { f:'Times New Roman', w:700, it:1, r:'e', from:'Set 34' },
 ];
 
 const PHOTOS = [
@@ -733,7 +743,8 @@ $('#fontChips').addEventListener('click', e => { const b = e.target.closest('[da
 
 const SET_PREVIEW = { 1:[4026,'#FDA2AC'], 2:[3663,'#F9DE8F'], 3:[5226,'#BAD62C'], 4:[4026,'#EF8557'], 5:[4041,'#FF6B6B'], 6:[3921,'#E5FE98'], 7:[5070,'#D5360C'], 8:[5193,'#FEFC11'], 9:[4606,'#E7577A'], 10:[3663,'#EECEDB'], 11:[3921,'#F24632'], 12:[5193,'#E3261C'], 13:[5070,'#FFBF0B'],
   14:[5070,'#FEFC11'], 15:[4026,'#E7577A'], 16:[5193,'#22F1A9'], 17:[4606,'#F4E0C5'], 18:[3921,'#C1E257'], 19:[5226,'#FFFFFF'], 20:[3663,'#F29C47'], 21:[3921,'#F15B29'], 22:[4041,'#F9DE8F'], 23:[4026,'#70D6C5'], 24:[5226,'#22F1A9'], 25:[5193,'#FF6B6B'],
-  26:[4606,'#E0FFC2'], 27:[4026,'#F5EBD0'], 28:[3921,'#EC5E27'], 29:[5070,'#E0FFC2'], 30:[5226,'#F5EBD0'] };
+  26:[4606,'#E0FFC2'], 27:[4026,'#F5EBD0'], 28:[3921,'#EC5E27'], 29:[5070,'#E0FFC2'], 30:[5226,'#F5EBD0'],
+  31:[4026,'#FEFC11'], 32:[3921,'#F4E0C5'], 33:[5193,'#EB6E9B'], 34:[3663,'#F9DE8F'] };
 function renderSets() {
   $('#sets').innerHTML = SETS.map(s => {
     const [ph, acc] = SET_PREVIEW[s.n];
